@@ -110,7 +110,7 @@ def criar_camada_texto(nome, matricula):
         
         largura_texto_nome = can.stringWidth(nome_str, fonte_nome, tamanho_fonte_nome)
         pos_x_nome = (largura_pagina - largura_texto_nome) / 2
-        pos_y_nome = 250 # Altere aqui se quiser subir ou descer o nome
+        pos_y_nome = 265 # Altere aqui se quiser subir ou descer o nome
         
         can.drawString(pos_x_nome, pos_y_nome, nome_str) 
         
