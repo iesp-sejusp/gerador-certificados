@@ -16,7 +16,7 @@ CAMINHO_LOGO = "logo.png"   # Nome do arquivo da logo no topo
 CAMINHO_FUNDO = "fundo.jpg" # Nome do arquivo da imagem de fundo
 
 # 📏 LOGO REDUZIDA À METADE (De 280px para 140px)
-LARGURA_LOGO = "140px"
+LARGURA_LOGO = "70px"
 
 # 🖼️ COMPORTAMENTO DO FUNDO
 MODO_TAMANHO_FUNDO = "cover"
