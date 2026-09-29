@@ -6,9 +6,49 @@ import streamlit as st
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.pdfgen import canvas
+import base64
 
 # Configuração da página da aplicação
 st.set_page_config(page_title="Gerador de Certificados", page_icon="📜", layout="centered")
+
+# --- FUNÇÃO PARA CONVERTER IMAGEM EM BASE64 (PARA O CSS DO FUNDO) ---
+def get_base64_of_bin_file(bin_file):
+    if not os.path.exists(bin_file):
+        return None
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# --- CONFIGURAÇÃO DA LOGO E IMAGEM DE FUNDO ---
+# Certifique-se de subir esses arquivos para o seu repositório no GitHub
+CAMINHO_LOGO = "logo.png"   # Nome do arquivo da logo no topo
+CAMINHO_FUNDO = "fundo.jpg" # Nome do arquivo da imagem de fundo
+
+# Aplicando Estilos CSS para Fundo Responsivo e Layout
+bin_fundo = get_base64_of_bin_file(CAMINHO_FUNDO)
+if bin_fundo:
+    css_fundo = f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url("data:image/jpg;base64,{bin_fundo}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    /* Tornando textos legíveis sobre o fundo escuro */
+    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown {{
+        color: #FFFFFF !important;
+    }}
+    </style>
+    """
+    st.markdown(css_fundo, unsafe_allow_html=True)
+
+# --- EXIBIR LOGO NO TOPO ---
+if os.path.exists(CAMINHO_LOGO):
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        st.image(CAMINHO_LOGO, use_container_width=True)
 
 st.title("📜 Gerador de Certificados em Lote")
 st.markdown("Carregue o modelo do certificado (frente e verso) e a planilha com os dados dos alunos para gerar os arquivos individuais em PDF.")
@@ -33,31 +73,29 @@ def criar_camada_texto(nome, matricula):
         nome_str = str(nome)
         matricula_str = f"Matrícula: {str(matricula)}"
         
-        # --- NOME DO ALUNO (Centralizado e na altura Y = 320) ---
+        # --- NOME DO ALUNO (Centralizado) ---
         fonte_nome = "Helvetica-Bold"
-        tamanho_fonte_nome = 30
+        tamanho_fonte_nome = 26
         can.setFont(fonte_nome, tamanho_fonte_nome)
         
-        # Calcula a largura exata que o nome ocupa para centralizá-lo perfeitamente
         largura_texto_nome = can.stringWidth(nome_str, fonte_nome, tamanho_fonte_nome)
         pos_x_nome = (largura_pagina - largura_texto_nome) / 2
-        pos_y_nome = 260 # Altura do nome (ajuste se precisar mais para cima ou para baixo)
+        pos_y_nome = 320 # Altura do nome (ajuste aqui se precisar descer mais)
         
         can.drawString(pos_x_nome, pos_y_nome, nome_str) 
         
-        # --- MATRÍCULA (Centralizada e logo abaixo do nome em Y = 270) ---
+        # --- MATRÍCULA (Centralizada e abaixo do nome) ---
         fonte_mat = "Helvetica"
         tamanho_fonte_mat = 14
         can.setFont(fonte_mat, tamanho_fonte_mat)
         
         largura_texto_mat = can.stringWidth(matricula_str, fonte_mat, tamanho_fonte_mat)
         pos_x_mat = (largura_pagina - largura_texto_mat) / 2
-        pos_y_mat = 230 # Altura da matrícula (ficará 50 pontos abaixo do nome)
+        pos_y_mat = 270 # Altura da matrícula
         
         can.drawString(pos_x_mat, pos_y_mat, matricula_str) 
         
     except Exception as e:
-        # Fallback de segurança caso ocorra algum imprevisto
         can.setFont("Helvetica-Bold", 24)
         can.drawString(150, 320, str(nome))
         can.setFont("Helvetica", 14)
@@ -74,7 +112,7 @@ if st.button("🚀 Gerar Certificados", type="primary"):
     else:
         try:
             with st.spinner("Processando certificados..."):
-                # Carregar planilha garantindo leitura correta
+                # Carregar planilha
                 df = pd.read_excel(arquivo_excel)
                 
                 # Validação de colunas
@@ -141,6 +179,6 @@ if st.button("🚀 Gerar Certificados", type="primary"):
 # --- RODAPÉ PERSONALIZADO ---
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: gray; font-size: 14px;'>Desenvolvido por Luciano Moresco</div>", 
+    "<div style='text-align: center; color: #FFFFFF; font-size: 14px;'>Desenvolvido por Luciano Moresco</div>", 
     unsafe_allow_html=True
 )
