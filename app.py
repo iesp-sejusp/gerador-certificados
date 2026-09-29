@@ -12,8 +12,8 @@ import base64
 st.set_page_config(page_title="Gerador de Certificados", page_icon="📜", layout="centered")
 
 # --- CONFIGURAÇÕES DE TAMANHO E VISUAL ---
-CAMINHO_LOGO = "logo.png"   # Nome do arquivo da logo no topo
-CAMINHO_FUNDO = "fundo.jpg" # Nome do arquivo da imagem de fundo
+CAMINHO_LOGO = "logo.png"    # Nome do arquivo da logo no topo
+CAMINHO_FUNDO = "fundo.jpg"  # Nome do arquivo da imagem de fundo
 
 # 📏 LOGO REDUZIDA À METADE (De 280px para 140px)
 LARGURA_LOGO = "90px"
@@ -29,7 +29,7 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
 
-# Aplicando Estilos CSS para Fundo Responsivo e Tamanho da Logo
+# Aplicando Estilos CSS para Fundo Responsivo, Tamanho da Logo e Cores dos Uploads
 bin_fundo = get_base64_of_bin_file(CAMINHO_FUNDO)
 if bin_fundo:
     css_fundo = f"""
@@ -41,10 +41,17 @@ if bin_fundo:
         background-repeat: no-repeat;
         background-attachment: fixed;
     }}
-    /* Tornando textos legíveis sobre o fundo escuro */
-    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown {{
+    /* Tornando textos gerais legíveis sobre o fundo escuro */
+    h1, h2, h3, h4, h5, h6, p, .stMarkdown {{
         color: #FFFFFF !important;
     }}
+    
+    /* --- AJUSTE: Textos e Rótulos da Área de Upload em AZUL ESCURO (#0B2545) --- */
+    label, .stFileUploader label, .stFileUploader p, .stFileUploader span, div[data-testid="stFileUploader"] small {{
+        color: #0B2545 !important;
+        font-weight: 600 !important;
+    }}
+
     /* Classe para controlar o tamanho exato da logo e centralizá-la */
     .logo-container {{
         display: flex;
