@@ -6,9 +6,6 @@ import streamlit as st
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-import urllib.request
 
 # Configuração da página da aplicação
 st.set_page_config(page_title="Gerador de Certificados", page_icon="📜", layout="centered")
@@ -28,21 +25,43 @@ with col2:
 # --- FUNÇÃO DE GERAÇÃO DA CAMADA DE TEXTO ---
 def criar_camada_texto(nome, matricula):
     packet = io.BytesIO()
+    # Dimensões do A4 Paisagem: Largura = 841.89, Altura = 595.27
+    largura_pagina = 841.89
     can = canvas.Canvas(packet, pagesize=landscape(letter))
     
     try:
-        # Nome do Aluno
-        can.setFont("Helvetica-Bold", 24)
         nome_str = str(nome)
-        can.drawString(150, 300, nome_str) 
-        
-        # Matrícula
-        can.setFont("Helvetica", 14)
         matricula_str = f"Matrícula: {str(matricula)}"
-        can.drawString(150, 250, matricula_str) 
+        
+        # --- NOME DO ALUNO (Centralizado e na altura Y = 320) ---
+        fonte_nome = "Helvetica-Bold"
+        tamanho_fonte_nome = 26
+        can.setFont(fonte_nome, tamanho_fonte_nome)
+        
+        # Calcula a largura exata que o nome ocupa para centralizá-lo perfeitamente
+        largura_texto_nome = can.stringWidth(nome_str, fonte_nome, tamanho_fonte_nome)
+        pos_x_nome = (largura_pagina - largura_texto_nome) / 2
+        pos_y_nome = 320 # Altura do nome (ajuste se precisar mais para cima ou para baixo)
+        
+        can.drawString(pos_x_nome, pos_y_nome, nome_str) 
+        
+        # --- MATRÍCULA (Centralizada e logo abaixo do nome em Y = 270) ---
+        fonte_mat = "Helvetica"
+        tamanho_fonte_mat = 14
+        can.setFont(fonte_mat, tamanho_fonte_mat)
+        
+        largura_texto_mat = can.stringWidth(matricula_str, fonte_mat, tamanho_fonte_mat)
+        pos_x_mat = (largura_pagina - largura_texto_mat) / 2
+        pos_y_mat = 270 # Altura da matrícula (ficará 50 pontos abaixo do nome)
+        
+        can.drawString(pos_x_mat, pos_y_mat, matricula_str) 
+        
     except Exception as e:
-        can.drawString(150, 300, str(nome))
-        can.drawString(150, 250, f"Matricula: {str(matricula)}")
+        # Fallback de segurança caso ocorra algum imprevisto
+        can.setFont("Helvetica-Bold", 24)
+        can.drawString(150, 320, str(nome))
+        can.setFont("Helvetica", 14)
+        can.drawString(150, 270, f"Matrícula: {str(matricula)}")
 
     can.save()
     packet.seek(0)
