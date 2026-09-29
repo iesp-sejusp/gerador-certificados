@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import io
 import os
 import zipfile
@@ -7,52 +6,59 @@ import streamlit as st
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import urllib.request
 
-# Configura豪o da p㍑ina da aplica豪o
-st.set_page_config(page_title="Gerador de Certificados", page_icon="??", layout="centered")
+# Configuração da página da aplicação
+st.set_page_config(page_title="Gerador de Certificados", page_icon="📜", layout="centered")
 
-st.title("?? Gerador de Certificados em Lote")
+st.title("📜 Gerador de Certificados em Lote")
 st.markdown("Carregue o modelo do certificado (frente e verso) e a planilha com os dados dos alunos para gerar os arquivos individuais em PDF.")
 
-# --- 躋EA DE UPLOAD ---
+# --- ÁREA DE UPLOAD ---
 col1, col2 = st.columns(2)
 
 with col1:
-    arquivo_modelo = st.file_uploader("1. Modelo do Certificado (PDF com 2 p㍑inas)", type=["pdf"])
+    arquivo_modelo = st.file_uploader("1. Modelo do Certificado (PDF com 2 páginas)", type=["pdf"])
 
 with col2:
     arquivo_excel = st.file_uploader("2. Lista de Participantes (Excel)", type=["xlsx", "xls"])
 
-# --- FUNのO DE GERAのO DA CAMADA DE TEXTO ---
+# --- FUNÇÃO DE GERAÇÃO DA CAMADA DE TEXTO ---
 def criar_camada_texto(nome, matricula):
     packet = io.BytesIO()
-    # Posi豪o em Paisagem (Landscape) A4
     can = canvas.Canvas(packet, pagesize=landscape(letter))
     
-    # --- AJUSTE AS COORDENADAS (X, Y) AQUI CONFORME SEU MODELO ---
-    # Nome do Aluno
-    can.setFont("Helvetica-Bold", 24)
-    can.drawString(150, 300, str(nome)) 
-    
-    # Matr団ula
-    can.setFont("Helvetica", 14)
-    can.drawString(150, 250, f"Matr団ula: {str(matricula)}") 
-    
+    try:
+        # Nome do Aluno
+        can.setFont("Helvetica-Bold", 24)
+        nome_str = str(nome)
+        can.drawString(150, 300, nome_str) 
+        
+        # Matrícula
+        can.setFont("Helvetica", 14)
+        matricula_str = f"Matrícula: {str(matricula)}"
+        can.drawString(150, 250, matricula_str) 
+    except Exception as e:
+        can.drawString(150, 300, str(nome))
+        can.drawString(150, 250, f"Matricula: {str(matricula)}")
+
     can.save()
     packet.seek(0)
     return PdfReader(packet)
 
 # --- PROCESSAMENTO ---
-if st.button("?? Gerar Certificados", type="primary"):
+if st.button("🚀 Gerar Certificados", type="primary"):
     if not arquivo_modelo or not arquivo_excel:
-        st.error("Por favor, fa溝 o upload de ambos os arquivos (Modelo PDF e Planilha Excel) antes de continuar.")
+        st.error("Por favor, faça o upload de ambos os arquivos (Modelo PDF e Planilha Excel) antes de continuar.")
     else:
         try:
             with st.spinner("Processando certificados..."):
-                # Carregar planilha
+                # Carregar planilha garantindo leitura correta
                 df = pd.read_excel(arquivo_excel)
                 
-                # Valida豪o de colunas
+                # Validação de colunas
                 if 'Nome' not in df.columns or 'Matricula' not in df.columns:
                     st.error("A planilha Excel precisa conter obrigatoriamente as colunas com os nomes exatos: 'Nome' e 'Matricula'.")
                     st.stop()
@@ -60,10 +66,10 @@ if st.button("?? Gerar Certificados", type="primary"):
                 leitor_modelo_base = PdfReader(arquivo_modelo)
                 
                 if len(leitor_modelo_base.pages) < 2:
-                    st.error("O modelo em PDF precisa conter pelo menos 2 p㍑inas (P㍑ina 1: Frente | P㍑ina 2: Verso).")
+                    st.error("O modelo em PDF precisa conter pelo menos 2 páginas (Página 1: Frente | Página 2: Verso).")
                     st.stop()
 
-                # Buffer para armazenar o arquivo ZIP final em mem羊ia
+                # Buffer para armazenar o arquivo ZIP final em memória
                 zip_buffer = io.BytesIO()
 
                 with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
@@ -71,15 +77,17 @@ if st.button("?? Gerar Certificados", type="primary"):
                         nome = str(row['Nome']).strip()
                         matricula = str(row['Matricula']).strip()
 
-                        # Tratar o nome para evitar erros em caracteres de arquivo
-                        nome_arquivo_valido = "".join(c for c in nome if c.isalnum() or c in (' ', '_', '-')).strip()
+                        # Tratar o nome mantendo acentos para os arquivos
+                        nome_arquivo_valido = "".join(c for c in nome if c.isalnum() or c in (' ', '_', '-', 'á','é','í','ó','ú','ã','õ','â','ê','ô','ç','Á','É','Í','Ó','Ú','Ã','Õ','Â','Ê','Ô','Ç')).strip()
+                        if not nome_arquivo_valido:
+                            nome_arquivo_valido = f"certificado_{index+1}"
                         
-                        # Recarregar o leitor a cada itera豪o para isolar as p㍑inas
+                        # Recarregar o leitor a cada iteração para isolar as páginas
                         leitor_modelo = PdfReader(arquivo_modelo)
                         pagina_frente = leitor_modelo.pages[0]
                         pagina_verso = leitor_modelo.pages[1]
 
-                        # Criar e mesclar a camada de texto na Frente (P㍑ina 1)
+                        # Criar e mesclar a camada de texto na Frente (Página 1)
                         pdf_texto = criar_camada_texto(nome, matricula)
                         pagina_frente.merge_page(pdf_texto.pages[0])
 
@@ -98,11 +106,11 @@ if st.button("?? Gerar Certificados", type="primary"):
 
                 zip_buffer.seek(0)
 
-                st.success("? Certificados gerados com sucesso!")
+                st.success("✅ Certificados gerados com sucesso!")
                 
-                # Bot黍 para baixar o ZIP
+                # Botão para baixar o ZIP
                 st.download_button(
-                    label="?? Baixar Todos os Certificados (.ZIP)",
+                    label="📦 Baixar Todos os Certificados (.ZIP)",
                     data=zip_buffer,
                     file_name="certificados_gerados.zip",
                     mime="application/zip"
@@ -110,3 +118,10 @@ if st.button("?? Gerar Certificados", type="primary"):
 
         except Exception as e:
             st.error(f"Ocorreu um erro ao processar os arquivos: {str(e)}")
+
+# --- RODAPÉ PERSONALIZADO ---
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center; color: gray; font-size: 14px;'>Desenvolvido por Luciano Moresco</div>", 
+    unsafe_allow_html=True
+)
