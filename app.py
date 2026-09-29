@@ -55,7 +55,7 @@ if bin_fundo:
         width: {LARGURA_LOGO} !important;
         max-width: 100% !important;
         height: auto !important;
-        margin-top: 5px;
+        margin-top: 15px;
     }}
     </style>
     """
