@@ -105,23 +105,23 @@ def criar_camada_texto(nome, matricula):
         
         # --- NOME DO ALUNO (Centralizado) ---
         fonte_nome = "Helvetica-Bold"
-        tamanho_fonte_nome = 26
+        tamanho_fonte_nome = 30
         can.setFont(fonte_nome, tamanho_fonte_nome)
         
         largura_texto_nome = can.stringWidth(nome_str, fonte_nome, tamanho_fonte_nome)
         pos_x_nome = (largura_pagina - largura_texto_nome) / 2
-        pos_y_nome = 320 # Altere aqui se quiser subir ou descer o nome
+        pos_y_nome = 280 # Altere aqui se quiser subir ou descer o nome
         
         can.drawString(pos_x_nome, pos_y_nome, nome_str) 
         
         # --- MATRÍCULA (Centralizada e abaixo do nome) ---
         fonte_mat = "Helvetica"
-        tamanho_fonte_mat = 14
+        tamanho_fonte_mat = 15
         can.setFont(fonte_mat, tamanho_fonte_mat)
         
         largura_texto_mat = can.stringWidth(matricula_str, fonte_mat, tamanho_fonte_mat)
         pos_x_mat = (largura_pagina - largura_texto_mat) / 2
-        pos_y_mat = 270 # Altere aqui a altura da matrícula
+        pos_y_mat = 240 # Altere aqui a altura da matrícula
         
         can.drawString(pos_x_mat, pos_y_mat, matricula_str) 
         
