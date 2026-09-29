@@ -35,7 +35,7 @@ def criar_camada_texto(nome, matricula):
         
         # --- NOME DO ALUNO (Centralizado e na altura Y = 320) ---
         fonte_nome = "Helvetica-Bold"
-        tamanho_fonte_nome = 36
+        tamanho_fonte_nome = 30
         can.setFont(fonte_nome, tamanho_fonte_nome)
         
         # Calcula a largura exata que o nome ocupa para centralizá-lo perfeitamente
