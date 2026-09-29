@@ -15,14 +15,11 @@ st.set_page_config(page_title="Gerador de Certificados", page_icon="📜", layou
 CAMINHO_LOGO = "logo.png"   # Nome do arquivo da logo no topo
 CAMINHO_FUNDO = "fundo.jpg" # Nome do arquivo da imagem de fundo
 
-# 📏 AJUSTE AQUI O TAMANHO DA LOGO (Ex: "200px", "300px", "350px")
-LARGURA_LOGO = "296px"
+# 📏 LOGO REDUZIDA À METADE (De 280px para 140px)
+LARGURA_LOGO = "140px"
 
-# 🖼️ AJUSTE AQUI O COMPORTAMENTO DO FUNDO:
-# - "cover": Preenche toda a tela cortando o excesso proporcionalmente (recomendado)
-# - "contain": Mostra a imagem inteira sem cortar, mas pode deixar bordas vazias
-# - "100% 100%": Estica a imagem exatamente para o tamanho da tela
-MODO_TAMANHO_FUNDO = "contain"
+# 🖼️ COMPORTAMENTO DO FUNDO
+MODO_TAMANHO_FUNDO = "cover"
 
 # --- FUNÇÃO PARA CONVERTER IMAGEM EM BASE64 (PARA O CSS DO FUNDO) ---
 def get_base64_of_bin_file(bin_file):
