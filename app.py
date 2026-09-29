@@ -46,9 +46,9 @@ if bin_fundo:
         color: #FFFFFF !important;
     }}
     
-    /* --- AJUSTE: Textos e Rótulos da Área de Upload em AMARELO (#DAA520) --- */
+    /* --- AJUSTE: Textos e Rótulos da Área de Upload em AMARELO (#968a02) --- */
     label, .stFileUploader label, .stFileUploader p, .stFileUploader span, div[data-testid="stFileUploader"] small {{
-        color: #807602 !important;
+        color: #968a02 !important;
         font-weight: 600 !important;
     }}
 
