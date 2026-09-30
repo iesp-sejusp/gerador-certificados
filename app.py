@@ -52,9 +52,9 @@ if bin_fundo:
         font-weight: 600 !important;
     }}
 
-    /* --- Texto do botão de Download (.ZIP) em PRETO --- */
+    /* --- Texto do botão de Download (.ZIP) em AMARELO --- */
     div.stDownloadButton > button, div.stDownloadButton > button p, div.stDownloadButton > button span {{
-        color: #000000 !important;
+        color: ##968a02 !important;
         font-weight: 700 !important;
     }}
 
