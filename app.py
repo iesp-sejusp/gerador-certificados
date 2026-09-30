@@ -186,6 +186,18 @@ if st.button("🚀 Gerar Certificados", type="primary"):
 
                 st.success("✅ Certificados gerados com sucesso!")
                 
+              st.markdown(
+                    """
+                    <style>
+                    div.stDownloadButton > button {
+                        color: #000000 !important;
+                        font-weight: 700 !important;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True
+                )
+                
                 st.download_button(
                     label="📦 Baixar Todos os Certificados (.ZIP)",
                     data=zip_buffer,
