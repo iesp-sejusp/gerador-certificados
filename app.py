@@ -62,7 +62,7 @@ if bin_fundo:
     .logo-container {{
         display: flex;
         justify-content: center;
-        margin-bottom: 2px;
+        margin-bottom: 0px;
     }}
     .logo-container img {{
         width: {LARGURA_LOGO} !important;
