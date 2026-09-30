@@ -29,7 +29,7 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
 
-# Aplicando Estilos CSS para Fundo Responsivo, Tamanho da Logo e Cores dos Uploads
+# Aplicando Estilos CSS para Fundo Responsivo, Tamanho da Logo e Cores
 bin_fundo = get_base64_of_bin_file(CAMINHO_FUNDO)
 if bin_fundo:
     css_fundo = f"""
@@ -46,10 +46,16 @@ if bin_fundo:
         color: #FFFFFF !important;
     }}
     
-    /* --- AJUSTE: Textos e Rótulos da Área de Upload em AMARELO (#968a02) --- */
+    /* --- Textos e Rótulos da Área de Upload em AMARELO (#968a02) --- */
     label, .stFileUploader label, .stFileUploader p, .stFileUploader span, div[data-testid="stFileUploader"] small {{
         color: #968a02 !important;
         font-weight: 600 !important;
+    }}
+
+    /* --- Texto do botão de Download (.ZIP) em PRETO --- */
+    div.stDownloadButton > button, div.stDownloadButton > button p, div.stDownloadButton > button span {{
+        color: #000000 !important;
+        font-weight: 700 !important;
     }}
 
     /* Classe para controlar o tamanho exato da logo e centralizá-la */
@@ -103,6 +109,9 @@ def criar_camada_texto(nome, matricula):
         nome_str = str(nome)
         matricula_str = f"Matrícula: {str(matricula)}"
         
+        # --- DEFINIR COR PRETA PARA OS TEXTOS DO CERTIFICADO ---
+        can.setFillColorRGB(0, 0, 0)
+        
         # --- NOME DO ALUNO (Centralizado) ---
         fonte_nome = "Helvetica-Bold"
         tamanho_fonte_nome = 30
@@ -126,6 +135,7 @@ def criar_camada_texto(nome, matricula):
         can.drawString(pos_x_mat, pos_y_mat, matricula_str) 
         
     except Exception as e:
+        can.setFillColorRGB(0, 0, 0)
         can.setFont("Helvetica-Bold", 24)
         can.drawString(150, 320, str(nome))
         can.setFont("Helvetica", 14)
@@ -185,18 +195,6 @@ if st.button("🚀 Gerar Certificados", type="primary"):
                 zip_buffer.seek(0)
 
                 st.success("✅ Certificados gerados com sucesso!")
-                
-              st.markdown(
-                    """
-                    <style>
-                    div.stDownloadButton > button {
-                        color: #000000 !important;
-                        font-weight: 700 !important;
-                    }
-                    </style>
-                    """,
-                    unsafe_allow_html=True
-                )
                 
                 st.download_button(
                     label="📦 Baixar Todos os Certificados (.ZIP)",
