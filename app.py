@@ -52,6 +52,12 @@ if bin_fundo:
         font-weight: 600 !important;
     }}
 
+    /* --- Cor do texto da mensagem de sucesso (st.success) --- */
+    div[data-testid="stSuccess"] p, div[data-testid="stSuccess"] span {{
+        color: #968a02 !important;
+        font-weight: 700 !important;
+    }}
+
     /* --- Texto do botão de Download (.ZIP) na cor #968a02 --- */
     div.stDownloadButton > button, div.stDownloadButton > button p, div.stDownloadButton > button span {{
         color: #968a02 !important;
