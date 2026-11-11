@@ -52,14 +52,21 @@ if bin_fundo:
         font-weight: 600 !important;
     }}
 
-    /* --- Mudando o fundo da caixa de sucesso para um tom escuro e elegante --- */
-    div[data-testid="stSuccess"] {{
-        background-color: #1E293B !important;
-        border: 1px solid #968a02 !important;
+    /* --- Estilo personalizado para a caixa de sucesso em HTML --- */
+    .custom-success-box {{
+        background-color: #1E293B;
+        border: 1px solid #968a02;
+        padding: 16px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
     }}
-    div[data-testid="stSuccess"] p, div[data-testid="stSuccess"] span, div[data-testid="stSuccess"] div {{
-        color: #FFFFFF !important;
-        font-weight: 600 !important;
+    .custom-success-box span {{
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 16px;
+        margin-left: 10px;
     }}
 
     /* --- Texto do botão de Download (.ZIP) na cor #968a02 --- */
@@ -206,7 +213,15 @@ if st.button("🚀 Gerar Certificados", type="primary"):
 
                 zip_buffer.seek(0)
 
-                st.success("✅ Certificados gerados com sucesso!")
+                # Substituindo o st.success por HTML customizado para controlar perfeitamente o fundo e a cor
+                st.markdown(
+                    """
+                    <div class="custom-success-box">
+                        <span>✅ Certificados gerados com sucesso!</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
                 
                 st.download_button(
                     label="📦 Baixar Todos os Certificados (.ZIP)",
