@@ -161,4 +161,56 @@ if st.button("🚀 Gerar Certificados", type="primary"):
                 leitor_modelo_base = PdfReader(arquivo_modelo)
                 
                 if len(leitor_modelo_base.pages) < 2:
-                    st.error("O modelo em PDF precisa conter pelo menos 2 páginas (Página 1: Frente |
+                    st.error("O modelo em PDF precisa conter pelo menos 2 páginas (Página 1: Frente | Página 2: Verso).")
+                    st.stop()
+
+                zip_buffer = io.BytesIO()
+
+                with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+                    for index, row in df.iterrows():
+                        nome = str(row['Nome']).strip()
+                        matricula = str(row['Matricula']).strip()
+
+                        nome_arquivo_valido = "".join(c for c in nome if c.isalnum() or c in (' ', '_', '-', 'á','é','í','ó','ú','ã','õ','â','ê','ô','ç','Á','É','Í','Ó','Ú','Ã','Õ','Â','Ê','Ô','Ç')).strip()
+                        if not nome_arquivo_valido:
+                            nome_arquivo_valido = f"certificado_{index+1}"
+                        
+                        leitor_modelo = PdfReader(arquivo_modelo)
+                        
+                        # Inicializa o escritor e adiciona as páginas do modelo nele primeiro
+                        escritor = PdfWriter()
+                        escritor.append(leitor_modelo)
+                        
+                        # Manipula a página de frente já anexada ao escritor
+                        pagina_frente = escritor.pages[0]
+                        pagina_verso = escritor.pages[1]
+
+                        pdf_texto = criar_camada_texto(nome, matricula)
+                        pagina_frente.merge_page(pdf_texto.pages[0])
+
+                        pdf_individual_buffer = io.BytesIO()
+                        escritor.write(pdf_individual_buffer)
+                        pdf_individual_buffer.seek(0)
+
+                        zip_file.writestr(f"{nome_arquivo_valido}.pdf", pdf_individual_buffer.getvalue())
+
+                zip_buffer.seek(0)
+
+                st.success("✅ Certificados gerados com sucesso!")
+                
+                st.download_button(
+                    label="📦 Baixar Todos os Certificados (.ZIP)",
+                    data=zip_buffer,
+                    file_name="certificados_gerados.zip",
+                    mime="application/zip"
+                )
+
+        except Exception as e:
+            st.error(f"Ocorreu um erro ao processar os arquivos: {str(e)}")
+
+# --- RODAPÉ PERSONALIZADO ---
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center; color: #FFFFFF; font-size: 14px;'>Desenvolvido por Luciano Moresco</div>", 
+    unsafe_allow_html=True
+)
