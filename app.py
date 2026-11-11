@@ -52,9 +52,9 @@ if bin_fundo:
         font-weight: 600 !important;
     }}
 
-    /* --- Cor do texto da mensagem de sucesso (st.success) --- */
-    div[data-testid="stSuccess"] p, div[data-testid="stSuccess"] span {{
-        color: #968a02 !important;
+    /* --- Cor do texto da mensagem de sucesso (st.success) com cor escura legível --- */
+    div[data-testid="stSuccess"], div[data-testid="stSuccess"] p, div[data-testid="stSuccess"] span, div[data-testid="stSuccess"] div {{
+        color: #0F172A !important;
         font-weight: 700 !important;
     }}
 
