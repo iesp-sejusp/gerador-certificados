@@ -52,13 +52,14 @@ if bin_fundo:
         font-weight: 600 !important;
     }}
 
-    /* --- Cor escura e nítida na caixa de sucesso (st.success) --- */
+    /* --- Mudando o fundo da caixa de sucesso para um tom escuro e elegante --- */
     div[data-testid="stSuccess"] {{
-        color: #0F172A !important;
+        background-color: #1E293B !important;
+        border: 1px solid #968a02 !important;
     }}
-    div[data-testid="stSuccess"] * {{
-        color: #0F172A !important;
-        font-weight: 700 !important;
+    div[data-testid="stSuccess"] p, div[data-testid="stSuccess"] span, div[data-testid="stSuccess"] div {{
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
     }}
 
     /* --- Texto do botão de Download (.ZIP) na cor #968a02 --- */
